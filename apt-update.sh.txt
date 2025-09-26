@@ -1,0 +1,28 @@
+#!/bin/bash
+# 一键卸载 Docker 脚本（支持 Ubuntu/Debian/CentOS/RHEL/Fedora）
+
+set -e
+
+echo ">>> 检测系统类型..."
+if [ -f /etc/debian_version ]; then
+    echo "检测到 Debian/Ubuntu 系统，开始卸载..."
+    sudo apt-get purge -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
+    sudo apt-get autoremove -y --purge docker-ce docker-ce-cli containerd.io || true
+
+elif [ -f /etc/redhat-release ]; then
+    if command -v dnf &>/dev/null; then
+        echo "检测到 RHEL/CentOS/Fedora (dnf)，开始卸载..."
+        sudo dnf remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
+    else
+        echo "检测到 RHEL/CentOS (yum)，开始卸载..."
+        sudo yum remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
+    fi
+else
+    echo "未知系统，请手动卸载。"
+    exit 1
+fi
+
+echo ">>> 清理残留数据..."
+sudo rm -rf /var/lib/docker /var/lib/containerd
+
+echo ">>> Docker 卸载完成！"
