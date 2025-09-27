@@ -6,20 +6,20 @@ set -e
 echo ">>> 检测系统类型..."
 if [ -f /etc/debian_version ]; then
     echo "检测到 Debian/Ubuntu 系统，开始更新..."
-    apt-get update -y
-    apt-get upgrade -y
-    apt-get autoremove -y
-    apt-get autoclean -y
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
+    sudo apt-get autoremove -y
+    sudo apt-get autoclean -y
 
 elif [ -f /etc/redhat-release ]; then
     if command -v dnf &>/dev/null; then
         echo "检测到 RHEL/CentOS/Fedora (dnf)，开始更新..."
-        dnf upgrade -y
-        dnf autoremove -y
+        sudo dnf upgrade -y
+        sudo dnf autoremove -y
     else
         echo "检测到 RHEL/CentOS (yum)，开始更新..."
-        yum update -y
-        yum autoremove -y
+        sudo yum update -y
+        sudo yum autoremove -y
     fi
 else
     echo "未知系统，请手动更新。"
@@ -27,4 +27,3 @@ else
 fi
 
 echo ">>> 系统更新完成！"
-
